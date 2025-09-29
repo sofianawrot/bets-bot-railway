@@ -41,4 +41,4 @@ RUN playwright install chromium
 COPY . .
 
 # Ejecutar el bot
-CMD ["python", "main.py"]
+CMD ["python", "-u", "main.py"]
