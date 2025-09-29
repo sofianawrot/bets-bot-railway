@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.env
+venv/
+*.json
+detalles_partidos_json/
+clasificaciones/
+clasificaciones_gpt/
+inputs_gpt_completo/
+respuestas_gpt/
