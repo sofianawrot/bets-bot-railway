@@ -1,13 +1,28 @@
 import sys
 import os
-import subprocess
-import schedule
-import time
-import json
-from datetime import datetime, timedelta
 
 # Forzar output a stderr para que Railway lo muestre
 sys.stdout = sys.stderr
+
+# Capturar cualquier error de importación
+try:
+    print("=== INICIANDO BOT ===")
+    print("Importando subprocess...")
+    import subprocess
+    print("Importando schedule...")
+    import schedule
+    print("Importando time...")
+    import time
+    print("Importando json...")
+    import json
+    print("Importando datetime...")
+    from datetime import datetime, timedelta
+    print("=== TODAS LAS IMPORTACIONES EXITOSAS ===")
+except Exception as e:
+    print(f"ERROR EN IMPORTACIONES: {e}")
+    import traceback
+    traceback.print_exc()
+    sys.exit(1)
 
 def programar_partidos_del_dia():
     """Lee los partidos del día y programa envíos individuales"""
@@ -65,14 +80,11 @@ def proceso_completo_diario():
     except Exception as e:
         print(f"❌ Error en proceso diario: {e}")
 
-# Programar proceso completo diario a las 08:00
-schedule.every().day.at("09:53").do(proceso_completo_diario)
+print("Programando tarea...")
+schedule.every().day.at("10:30").do(proceso_completo_diario)
+print("Tarea programada para las 10:05")
 
-# Ejecutar inmediatamente al iniciar (para el primer día)
-# proceso_completo_diario()
-
-# Loop principal
 print("\n🤖 Bot iniciado - Esperando tareas programadas...")
 while True:
     schedule.run_pending()
-    time.sleep(60)  # Revisar cada minuto
+    time.sleep(60)
