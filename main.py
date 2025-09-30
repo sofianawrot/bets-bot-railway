@@ -1,9 +1,13 @@
+import sys
 import os
 import subprocess
 import schedule
 import time
 import json
 from datetime import datetime, timedelta
+
+# Forzar output a stderr para que Railway lo muestre
+sys.stdout = sys.stderr
 
 def ejecutar_scraping():
     print("🔄 1. Ejecutando scraping con Playwright...")
