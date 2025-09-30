@@ -66,10 +66,10 @@ def proceso_completo_diario():
         print(f"❌ Error en proceso diario: {e}")
 
 # Programar proceso completo diario a las 08:00
-schedule.every().day.at("09:45").do(proceso_completo_diario)
+schedule.every().day.at("09:53").do(proceso_completo_diario)
 
 # Ejecutar inmediatamente al iniciar (para el primer día)
-proceso_completo_diario()
+# proceso_completo_diario()
 
 # Loop principal
 print("\n🤖 Bot iniciado - Esperando tareas programadas...")
