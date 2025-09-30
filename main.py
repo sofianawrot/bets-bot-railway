@@ -9,18 +9,6 @@ from datetime import datetime, timedelta
 # Forzar output a stderr para que Railway lo muestre
 sys.stdout = sys.stderr
 
-def ejecutar_scraping():
-    print("🔄 1. Ejecutando scraping con Playwright...")
-    subprocess.run(["python", "fotmob_api_playwright.py"], check=True)
-
-def ejecutar_analisis():
-    print("🔄 2. Analizando partidos...")
-    subprocess.run(["python", "analizar_partido.py"], check=True)
-
-def ejecutar_envio_completo():
-    print("🔄 3. Enviando lista completa a Telegram...")
-    subprocess.run(["python", "enviar_a_telegram.py", "hora"], check=True)
-
 def programar_partidos_del_dia():
     """Lee los partidos del día y programa envíos individuales"""
     if not os.path.exists("partidos_hoy.json"):
@@ -43,29 +31,42 @@ def programar_partidos_del_dia():
             ).tag('partidos')
             print(f"⏰ Programado: {partido['local']} vs {partido['visitante']} a las {hora}")
 
-def enviar_partido_individual(partido):
-    """Envía notificación de un partido específico"""
-    print(f"⚽ Enviando partido: {partido['local']} vs {partido['visitante']}")
-    # Aquí puedes personalizar el envío individual si quieres
-    # Por ahora usaremos el script existente
-    subprocess.run(["python", "enviar_a_telegram.py", "hora"])
-
 def proceso_completo_diario():
     """Ejecuta el flujo completo una vez al día"""
     print("\n🚀 INICIANDO PROCESO DIARIO")
     print("=" * 50)
     
     try:
-        ejecutar_scraping()
-        ejecutar_analisis()
-        ejecutar_envio_completo()
-        programar_partidos_del_dia()
+        print("🔄 1. Scraping de partidos...")
+        subprocess.run(["python", "fotmob_api_playwright.py"], check=True)
+        
+        print("🔄 2. Filtrando partidos...")
+        subprocess.run(["python", "filtrar_partidos_local_v17.py"], check=True)
+        
+        print("🔄 3. Scrapeando detalles...")
+        subprocess.run(["python", "scrapear_datos_partido.py"], check=True)
+        
+        print("🔄 4. Descargando clasificaciones...")
+        subprocess.run(["python", "descargar_clasificaciones_por_nombre.py"], check=True)
+        
+        print("🔄 5. Extrayendo clasificaciones...")
+        subprocess.run(["python", "extraer_clasificaciones_por_partido.py"], check=True)
+        
+        print("🔄 6. Unificando datos...")
+        subprocess.run(["python", "unificar_detalles_y_clasificacion.py"], check=True)
+        
+        print("🔄 7. Analizando partidos...")
+        subprocess.run(["python", "analizar_partido.py"], check=True)
+        
+        print("🔄 8. Enviando a Telegram...")
+        subprocess.run(["python", "enviar_a_telegram.py", "hora"], check=True)
+        
         print("\n✅ Proceso diario completado")
     except Exception as e:
         print(f"❌ Error en proceso diario: {e}")
 
 # Programar proceso completo diario a las 08:00
-schedule.every().day.at("09:42").do(proceso_completo_diario)
+schedule.every().day.at("09:45").do(proceso_completo_diario)
 
 # Ejecutar inmediatamente al iniciar (para el primer día)
 proceso_completo_diario()
